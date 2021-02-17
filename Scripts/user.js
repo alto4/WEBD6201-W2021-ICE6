@@ -50,14 +50,14 @@
 
     /**
      * Creates an instance of User.
-     * @param {string} [DisplayName=""]
+     * @param {string} [displayName=""]
      * @param {string} [emailAddress=""]
      * @param {string} [username=""]
      * @param {string} [password=""]
      */
-    constructor(DisplayName = "", emailAddress = "", username = "", password="") 
+    constructor(displayName = "", emailAddress = "", username = "", password="") 
     {
-      this.DisplayName = fullName;
+      this.DisplayName = displayName;
       this.EmailAddress = emailAddress;
       this.Username = username;
       this.Password = password;
