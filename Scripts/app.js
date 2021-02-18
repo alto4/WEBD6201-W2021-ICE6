@@ -163,6 +163,7 @@
 
     function displayContactList() 
     {
+      
       if (localStorage.length > 0) 
       {
         let contactList = document.getElementById("contactList");
@@ -273,7 +274,65 @@
 
     function displayLogin()
     {
+      // check if the user is already logged in
+      if(sessionStorage.getItem("user"))
+      {
+        // redirect to the secure area
+        location.href = "contact-list.html";
+      }
 
+      let messageArea = $("#messageArea");
+      messageArea.hide();
+
+      $("#loginButton").on("click", function() 
+      {
+        let username = $("#username");
+        let password = $("#password");
+        let success = false;
+        let newUser = new core.User();
+
+        // use ajax to access the json file
+        $.get("./Data/users.json", function(data)
+        {
+          // check each user in the users.json file  (linear search)
+          for (const user of data.users) 
+          {
+            if(username.val() == user.Username && password.val() == user.Password)
+            {
+              newUser.fromJSON(user);
+              success = true;
+              break;
+            }
+          }
+
+          // if username and password matches - success... then perform login
+          if(success)
+          {
+            // add user to session storage
+            sessionStorage.setItem("user", newUser.serialize());
+
+            // hide any error message
+            messageArea.removeAttr("class").hide();
+
+            // redirect user to secure area - contact-list.html
+            location.href = "contact-list.html";
+          }
+          else
+          {
+            // display an error message
+            username.trigger("focus").trigger("select");
+            messageArea.show().addClass("alert alert-danger").text("Error: Invalid login information");
+          }
+        });
+      });
+
+      $("#cancelButton").on("click", function()
+      {
+        // clear the login form
+        document.forms[0].reset();
+        // return to the home page
+        location.href = "index.html";
+      });
     }
 
     function displayRegister()
