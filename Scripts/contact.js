@@ -1,48 +1,41 @@
 "use strict";
 // Contact Class
 
-((core)=>{
+((core) => {
   class Contact {
     // getters and setters
-    get FullName() 
-    {
+    get FullName() {
       return this.m_fullName;
     }
-  
-    set FullName(value) 
-    {
+
+    set FullName(value) {
       this.m_fullName = value;
     }
-  
-    get ContactNumber() 
-    {
+
+    get ContactNumber() {
       return this.m_contactNumber;
     }
-  
-    set ContactNumber(value) 
-    {
+
+    set ContactNumber(value) {
       this.m_contactNumber = value;
     }
-  
-    get EmailAddress() 
-    {
+
+    get EmailAddress() {
       return this.m_emailAddress;
     }
-  
-    set EmailAddress(value) 
-    {
+
+    set EmailAddress(value) {
       this.m_emailAddress = value;
     }
-  
+
     // constructor
 
     /**
-     * @param {string} fullName 
-     * @param {string} contactNumber 
-     * @param {string} emailAddress 
+     * @param {string} fullName
+     * @param {string} contactNumber
+     * @param {string} emailAddress
      */
-    constructor(fullName = "", contactNumber = "", emailAddress = "") 
-    {
+    constructor(fullName = "", contactNumber = "", emailAddress = "") {
       this.FullName = fullName;
       this.ContactNumber = contactNumber;
       this.EmailAddress = emailAddress;
@@ -55,8 +48,7 @@
      *
      * @returns {string}
      */
-    toString() 
-    {
+    toString() {
       return `Full Name     : ${this.FullName} \nContact Number: ${this.ContactNumber}\nEmail Address : ${this.EmailAddress}`;
     }
 
@@ -65,13 +57,12 @@
      *
      * @returns {Object}
      */
-    toJSON()
-    {
+    toJSON() {
       return {
-        "FullName": this.FullName,
-        "ContactNumber": this.ContactNumber,
-        "EmailAddress": this.EmailAddress
-      }
+        FullName: this.FullName,
+        ContactNumber: this.ContactNumber,
+        EmailAddress: this.EmailAddress,
+      };
     }
 
     /**
@@ -79,8 +70,7 @@
      *
      * @param {Object} data
      */
-    fromJSON(data)
-    {
+    fromJSON(data) {
       this.FullName = data.FullName;
       this.ContactNumber = data.ContactNumber;
       this.EmailAddress = data.EmailAddress;
@@ -91,14 +81,14 @@
      *
      * @returns {string}
      */
-    serialize()
-    {
-      if(this.FullName !== "" && this.ContactNumber !== "" && this.EmailAddress !== "")
-      {
+    serialize() {
+      if (
+        this.FullName !== "" &&
+        this.ContactNumber !== "" &&
+        this.EmailAddress !== ""
+      ) {
         return `${this.FullName},${this.ContactNumber},${this.EmailAddress}`;
-      }
-      else 
-      {
+      } else {
         console.error("One or more properties of the Contact is empty");
         return null;
       }
@@ -110,8 +100,7 @@
      * @param {string} data
      * @return {void}
      */
-    deserialize(data)
-    {
+    deserialize(data) {
       let propertyArray = data.split(",");
       this.FullName = propertyArray[0];
       this.ContactNumber = propertyArray[1];
@@ -120,7 +109,4 @@
   }
 
   core.Contact = Contact;
-
-})(core || (core={}));
-
-
+})(core || (core = {}));
