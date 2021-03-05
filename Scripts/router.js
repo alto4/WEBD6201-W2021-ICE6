@@ -74,6 +74,7 @@
 })(core || (core = {}));
 
 let router = new core.Router();
+
 router.AddTable([
   "/",
   "/home",
@@ -90,7 +91,6 @@ router.AddTable([
 // Alias for location.pathname
 let route = location.pathname;
 
-// Check to see if route in browser has been set in router
 if (router.Find(route) > -1) {
   router.ActiveLink = route == "/" ? "home" : route.substring(1);
 } else {

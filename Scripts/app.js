@@ -30,7 +30,7 @@
         $(`#${router.ActiveLink}`).addClass("active"); // applies highlighted link to new page
 
         console.log(router.ActiveLink);
-        history.pushState({}, "", router.activeLink); // this replaces the url displayed in the browser
+        history.pushState({}, "", router.ActiveLink); // this replaces the url displayed in the browser
         //location.href = String( location.href ).replace( /#/, "" ); // remove # ? nope
       });
 
@@ -162,6 +162,7 @@
 
     // toggle login/logout
     toggleLogin();
+
     if (localStorage.length > 0) {
       let contactList = document.getElementById("contactList");
 
@@ -347,15 +348,11 @@
   }
 
   function authGuard() {
-    "use strict";
-
-    (() => {
-      // check if the user is not logged in
-      if (!sessionStorage.getItem("user")) {
-        // redirect back to login page
-        location.href = "/login";
-      }
-    })();
+    // check if the user is not logged in
+    if (!sessionStorage.getItem("user")) {
+      // redirect back to login page
+      location.href = "/login";
+    }
   }
 
   function display404() {}
