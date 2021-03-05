@@ -7,70 +7,73 @@
 "use strict";
 
 ((core) => {
+  /**
+   * Inject the Navigation bar into the Header element and highlight the active link based on the pageName parameter
+   *
+   * @param {string} pageName
+   */
   function loadHeader(pageName) {
-    // Inject header
-    // Load navbar
+    // inject the Header
     $.get("./Views/components/header.html", function (data) {
-      $("header").html(data);
-      // Add highlight to active nav link
-      $(`#${pageName}`).addClass("active");
+      $("header").html(data); // load the navigation bar
+      $(`#${pageName}`).addClass("active"); // highlight active link
 
-      // Loop through each anchor tag and add event listener for injecting page content into template
+      // loop through each anchor tag in the unordered list and
+      // add an event listener / handler to allow for
+      // content injection
       $("a").on("click", function () {
-        $(`#${activeLink}`).removeClass("active");
-        let activeLink = $(this).attr("id");
+        $(`#${activeLink}`).removeClass("active"); // removes highlighted link
+        activeLink = $(this).attr("id");
         loadContent(activeLink);
-        $(`#${activeLink}`).addClass("active");
+        $(`#${activeLink}`).addClass("active"); // applies highlighted link to new page
 
-        // Replace browser URL when navbar link is clicked
-        history.replaceState({}, "", activeLink);
+        console.log(activeLink);
+        history.pushState({}, "", activeLink); // this replaces the url displayed in the browser
+        //location.href = String( location.href ).replace( /#/, "" ); // remove # ? nope
+      });
+
+      // make it look like each nav item is an active link
+      $("a").on("mouseover", function () {
+        $(this).css("cursor", "pointer");
       });
     });
   }
 
   /**
-   * Injects page content into main element
+   * Inject page content in the main element
    *
    * @param {string} pageName
    * @returns {void}
    */
   function loadContent(pageName) {
-    // Inject page content
-    $.get(`./Views/content/${pageName}`, function (data) {
+    // inject content
+    $.get(`./Views/content/${pageName}.html`, function (data) {
       $("main").html(data);
     });
   }
 
   function loadFooter() {
-    // Inject footer
+    // inject the Footer
     $.get("./Views/components/footer.html", function (data) {
       $("footer").html(data);
     });
   }
 
   function displayHome() {
-    loadHeader("home");
-    loadContent("home.html");
+    activeLink = "home";
+
+    loadHeader(activeLink);
+
+    loadContent(activeLink);
+
     loadFooter();
   }
 
-  function displayAbout() {
-    loadHeader("about");
-    loadContent("about.html");
-    loadFooter();
-  }
+  function displayAbout() {}
 
-  function displayProjects() {
-    loadHeader("projects");
-    loadContent("projects.html");
-    loadFooter();
-  }
+  function displayProjects() {}
 
-  function displayServices() {
-    loadHeader("services");
-    loadContent("services.html");
-    loadFooter();
-  }
+  function displayServices() {}
 
   function testFullName() {
     let messageArea = $("#messageArea").hide();
