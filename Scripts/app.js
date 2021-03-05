@@ -24,12 +24,12 @@
       // add an event listener / handler to allow for
       // content injection
       $("a").on("click", function () {
-        $(`#${router.activeLink}`).removeClass("active"); // removes highlighted link
-        router.activeLink = $(this).attr("id");
-        loadContent(router.activeLink);
-        $(`#${router.activeLink}`).addClass("active"); // applies highlighted link to new page
+        $(`#${router.ActiveLink}`).removeClass("active"); // removes highlighted link
+        router.ActiveLink = $(this).attr("id");
+        loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+        $(`#${router.ActiveLink}`).addClass("active"); // applies highlighted link to new page
 
-        console.log(router.activeLink);
+        console.log(router.ActiveLink);
         history.pushState({}, "", router.activeLink); // this replaces the url displayed in the browser
         //location.href = String( location.href ).replace( /#/, "" ); // remove # ? nope
       });
@@ -45,12 +45,15 @@
    * Inject page content in the main element
    *
    * @param {string} pageName
+   * @param {function} callback
    * @returns {void}
    */
-  function loadContent(pageName) {
+  function loadContent(pageName, callback) {
     // inject content
     $.get(`./Views/content/${pageName}.html`, function (data) {
       $("main").html(data);
+
+      callback();
     });
   }
 
@@ -62,13 +65,7 @@
   }
 
   function displayHome() {
-    router.activeLink = "home";
-
-    loadHeader(router.activeLink);
-
-    loadContent(router.activeLink);
-
-    loadFooter();
+    console.log("Home page function has been called.");
   }
 
   function displayAbout() {}
@@ -190,18 +187,18 @@
       contactList.innerHTML = data;
 
       $("button.edit").on("click", function () {
-        location.href = "edit.html#" + $(this).val();
+        location.href = "/edit#" + $(this).val();
       });
 
       $("button.delete").on("click", function () {
         if (confirm("Are you sure?")) {
           localStorage.removeItem($(this).val());
         }
-        location.href = "contact-list.html"; // refresh the page
+        location.href = "/contact-list"; // refresh the page
       });
 
       $("#addButton").on("click", function () {
-        location.href = "edit.html";
+        location.href = "/edit";
       });
     }
   }
@@ -246,12 +243,12 @@
       localStorage.setItem(key, contact.serialize());
 
       // return to the contact list
-      location.href = "contact-list.html";
+      location.href = "/contact-list";
     });
 
     $("#cancelButton").on("click", function () {
       // return to the contact list
-      location.href = "contact-list.html";
+      location.href = "/contact-list";
     });
   }
 
@@ -288,7 +285,7 @@
           messageArea.removeAttr("class").hide();
 
           // redirect user to secure area - contact-list.html
-          location.href = "contact-list.html";
+          location.href = "/contact-list";
         } else {
           // display an error message
           username.trigger("focus").trigger("select");
@@ -304,18 +301,20 @@
       // clear the login form
       document.forms[0].reset();
       // return to the home page
-      location.href = "index.html";
+      location.href = "/";
     });
   }
 
   function displayRegister() {}
 
   function toggleLogin() {
+    console.log("Toggle login");
+
     // if user is logged in
     if (sessionStorage.getItem("user")) {
       // swap out the login link for logout
-      $("#login").html(
-        `<a id="logout" class="nav-link" aria-current="page" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>`
+      $("#loginListItem").html(
+        `<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`
       );
 
       $("#logout").on("click", function () {
@@ -323,47 +322,61 @@
         sessionStorage.clear();
 
         // redirect back to login
-        location.href = "login.html";
+        location.href = "/login";
       });
 
       $(`<li class="nav-item">
-        <a id="contactListLink" class="nav-link" aria-current="page" href="contact-list.html"><i class="fas fa-users fa-lg"></i> Contact List</a>
-      </li>`).insertBefore("#login");
+        <a id="contactListLink" class="nav-link" aria-current="page" href="/contact-list"><i class="fas fa-users fa-lg"></i> Contact List</a>
+      </li>`).insertBefore("#loginListItem");
+    } else {
+      // swap out the login link for logout
+      $("#loginListItem").html(
+        `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
+      );
     }
   }
 
+  function display404() {}
+
+  function ActiveLinkCallBack(activeLink) {
+    switch (activeLink) {
+      case "home":
+        return displayHome;
+      case "about":
+        return displayAbout;
+      case "projects":
+        return displayProjects;
+      case "services":
+        return displayServices;
+      case "contact":
+        return displayContact;
+      case "contact-list":
+        return displayContactList;
+      case "edit":
+        return displayEdit;
+      case "login":
+        return displayLogin;
+      case "register":
+        return displayRegister;
+      case "404":
+        return display404;
+      default:
+        console.log("ERROR: callback does not exist: " + activeLink);
+        break;
+    }
+  }
+
+  /**
+   *
+   */
   function Start() {
     console.log("App Started...");
 
-    switch (document.title) {
-      case "Home":
-        displayHome();
-        break;
-      case "About":
-        displayAbout();
-        break;
-      case "Projects":
-        displayProjects();
-        break;
-      case "Services":
-        displayServices();
-        break;
-      case "Contact":
-        displayContact();
-        break;
-      case "Contact-List":
-        displayContactList();
-        break;
-      case "Edit":
-        displayEdit();
-        break;
-      case "Login":
-        displayLogin();
-        break;
-      case "Register":
-        displayRegister();
-        break;
-    }
+    loadHeader(router.ActiveLink);
+
+    loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+
+    loadFooter();
 
     // toggle login/logout
     toggleLogin();

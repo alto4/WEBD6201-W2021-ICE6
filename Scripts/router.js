@@ -17,7 +17,6 @@
     }
 
     // Public methods
-
     /**
      * Add - creates new route in routing
      *
@@ -88,4 +87,12 @@ router.AddTable([
   "/edit",
 ]);
 
-console.log(router.ToString());
+// Alias for location.pathname
+let route = location.pathname;
+
+// Check to see if route in browser has been set in router
+if (router.Find(route) > -1) {
+  router.ActiveLink = route == "/" ? "home" : route.substring(1);
+} else {
+  router.ActiveLink = "404";
+}
