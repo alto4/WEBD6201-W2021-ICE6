@@ -157,6 +157,11 @@
   }
 
   function displayContactList() {
+    // Check if user is authorized to view the page
+    authGuard();
+
+    // toggle login/logout
+    toggleLogin();
     if (localStorage.length > 0) {
       let contactList = document.getElementById("contactList");
 
@@ -325,6 +330,11 @@
         location.href = "/login";
       });
 
+      // make it look like each nav item is an active link
+      $("#logout").on("mouseover", function () {
+        $(this).css("cursor", "pointer");
+      });
+
       $(`<li class="nav-item">
         <a id="contactListLink" class="nav-link" aria-current="page" href="/contact-list"><i class="fas fa-users fa-lg"></i> Contact List</a>
       </li>`).insertBefore("#loginListItem");
@@ -334,6 +344,18 @@
         `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
       );
     }
+  }
+
+  function authGuard() {
+    "use strict";
+
+    (() => {
+      // check if the user is not logged in
+      if (!sessionStorage.getItem("user")) {
+        // redirect back to login page
+        location.href = "/login";
+      }
+    })();
   }
 
   function display404() {}
@@ -377,9 +399,6 @@
     loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
 
     loadFooter();
-
-    // toggle login/logout
-    toggleLogin();
   }
 
   window.addEventListener("load", Start);
