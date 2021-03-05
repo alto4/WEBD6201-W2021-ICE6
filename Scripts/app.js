@@ -13,6 +13,8 @@
    * @param {string} pageName
    */
   function loadHeader(pageName) {
+    console.log(location.pathname);
+
     // inject the Header
     $.get("./Views/components/header.html", function (data) {
       $("header").html(data); // load the navigation bar
@@ -22,13 +24,13 @@
       // add an event listener / handler to allow for
       // content injection
       $("a").on("click", function () {
-        $(`#${activeLink}`).removeClass("active"); // removes highlighted link
-        activeLink = $(this).attr("id");
-        loadContent(activeLink);
-        $(`#${activeLink}`).addClass("active"); // applies highlighted link to new page
+        $(`#${router.activeLink}`).removeClass("active"); // removes highlighted link
+        router.activeLink = $(this).attr("id");
+        loadContent(router.activeLink);
+        $(`#${router.activeLink}`).addClass("active"); // applies highlighted link to new page
 
-        console.log(activeLink);
-        history.pushState({}, "", activeLink); // this replaces the url displayed in the browser
+        console.log(router.activeLink);
+        history.pushState({}, "", router.activeLink); // this replaces the url displayed in the browser
         //location.href = String( location.href ).replace( /#/, "" ); // remove # ? nope
       });
 
@@ -60,11 +62,11 @@
   }
 
   function displayHome() {
-    activeLink = "home";
+    router.activeLink = "home";
 
-    loadHeader(activeLink);
+    loadHeader(router.activeLink);
 
-    loadContent(activeLink);
+    loadContent(router.activeLink);
 
     loadFooter();
   }
